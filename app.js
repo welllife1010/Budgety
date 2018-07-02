@@ -29,41 +29,55 @@ even after theouter function has returned.
 
 -------------------------------------------------------------------------------------------- */
 
+// BUDGET CONTROLLER - 
 var budgetController = (function() {
 
-	var x = 23;
-	var add = function(a) {
-		return x + a;
-	}
-
-	return {
-		publicTest: function(b) {
-			return add(b);
-		}
-	}
+	// Some code
 
 })();
 
 
+// UI CONTROLLER - 
 var UIController = (function() {
 
-	// Some codes
+	// Some code
 
 })();
 
+
+// GLOBAL APP CONTROLLER - 
 // We'll pass the other two modules as arguments to the controller so that 
 // this controller knows about the other two and can connect them.
+// This is the central place where I want to decide, where I want to control
+// what happens upon each event, and then delegate these tasks to other controllers.
 var controller = (function(budgetCtrl, UICtrl) {
 
-	var z = budgetCtrl.publicTest(5);
-
-	return {
-		anotherPublic: function() {
-			console.log(z);
-		}
+	var ctrlAddItem = function() {
+		// 1. Get the field input data
+		// 2. Add the item to the budet controller
+		// 3. Add the item to the UI
+		// 4. Calculate the budget
+		// 5. Display the budget on the UI
+		console.log("It works!");
 	}
 
+	document.querySelector('.add__btn').addEventListener('click', ctrlAddItem);
+
+	document.addEventListener('keypress', function(event) {
+		if (event.keyCode === 13 || event.which === 13) {
+			ctrlAddItem();
+		}
+	});
+
 })(budgetController, UIController);
+
+
+
+
+
+
+
+
 
 
 
