@@ -70,30 +70,43 @@ var UIController = (function() {
 // what happens upon each event, and then delegate these tasks to other controllers.
 var controller = (function(budgetCtrl, UICtrl) {
 
-	var DOM = UICtrl.getDOMstrings();
+	var setupEventListeners = function() {
+		var DOM = UICtrl.getDOMstrings();
+		document.querySelector(DOM.inputBtn).addEventListener('click', ctrlAddItem);
+		document.addEventListener('keypress', function(event) {
+			if (event.keyCode === 13 || event.which === 13) {
+				ctrlAddItem();
+			}
+		});
+	};
 
 	var ctrlAddItem = function() {
 		// 1. Get the field input data
 		var input = UIController.getInput();
-		console.log(input);
+		
 		// 2. Add the item to the budet controller
 		// 3. Add the item to the UI
 		// 4. Calculate the budget
 		// 5. Display the budget on the UI
-	}
+	};
 
-	document.querySelector(DOM.inputBtn).addEventListener('click', ctrlAddItem);
-
-	document.addEventListener('keypress', function(event) {
-		if (event.keyCode === 13 || event.which === 13) {
-			ctrlAddItem();
+	return {
+		init: function() {
+			console.log('Application has started.');
+			setupEventListeners();
 		}
-	});
+	}
 
 })(budgetController, UIController);
 
-
-
+// Without this line of code, nothing is ever going to happen
+// because there will be no event listeners.
+// Without event listeners we cannot input data, and withour data, 
+// there is no application.
+// We create the init function because we want to have a place 
+// where we can put all code that we want to be executed 
+// right at the begining when our application starts.
+controller.init();
 
 
 
