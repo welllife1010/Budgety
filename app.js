@@ -22,6 +22,12 @@ that we want to be public.
 3. CONTROLLER MODULE - control the entire app and basically acting as a link between the other two modules.
 
 -------------------------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------------------------
+
+Closure - An inner function has always access to the variables and parameters of its outer function
+even after theouter function has returned.
+
+-------------------------------------------------------------------------------------------- */
 
 var budgetController = (function() {
 
@@ -32,15 +38,32 @@ var budgetController = (function() {
 
 	return {
 		publicTest: function(b) {
-			console.log(add(b));
+			return add(b);
 		}
 	}
 
 })();
 
 
+var UIController = (function() {
 
+	// Some codes
 
+})();
+
+// We'll pass the other two modules as arguments to the controller so that 
+// this controller knows about the other two and can connect them.
+var controller = (function(budgetCtrl, UICtrl) {
+
+	var z = budgetCtrl.publicTest(5);
+
+	return {
+		anotherPublic: function() {
+			console.log(z);
+		}
+	}
+
+})(budgetController, UIController);
 
 
 
