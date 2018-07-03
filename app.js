@@ -30,9 +30,32 @@ even after theouter function has returned.
 -------------------------------------------------------------------------------------------- */
 
 // BUDGET CONTROLLER - 
+// Keeps track of all the incomes and expenses and also of the budget itself and later also the percentages.
 var budgetController = (function() {
 
-	// Some code
+	var Expense = function(id, description, value) {
+		this.id = id;
+		this.description = description;
+		this.value = value;
+	}
+
+	var Income = function(id, description, value) {
+		this.id = id;
+		this.description = description;
+		this.value = value;
+	}
+
+	// data structure ready to receive data
+	var data = {
+		allItems: {
+			exp: [],
+			inc: []
+		},
+		totals: {
+			exp: 0,
+			inc: 0
+		}
+	}
 
 })();
 
@@ -75,6 +98,7 @@ var controller = (function(budgetCtrl, UICtrl) {
 		document.querySelector(DOM.inputBtn).addEventListener('click', ctrlAddItem);
 		document.addEventListener('keypress', function(event) {
 			if (event.keyCode === 13 || event.which === 13) {
+				event.preventDefault(); // prevents the enter key from also triggering a click event
 				ctrlAddItem();
 			}
 		});
