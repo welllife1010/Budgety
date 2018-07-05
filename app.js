@@ -54,7 +54,20 @@ var budgetController = (function() {
 		this.id = id;
 		this.description = description;
 		this.value = value;
+		this.percentage = -1;
 	}
+
+	Expense.prototype.calcPercentage = function(totalIncome) {
+		if (totalIncome > 0) {
+			this.percentage = Math.round((this.value / totalIncome) * 100);
+		} else {
+			this.percentage = -1;
+		}
+	};
+
+	Expense.prototype.getPercentage = function() {
+		return this.percentage;
+	};
 
 	var Income = function(id, description, value) {
 		this.id = id;
@@ -132,6 +145,19 @@ var budgetController = (function() {
 				data.percentage = -1;
 			}
 			
+		},
+		calculatePercentages: function() {
+			data.allItems.exp.forEach(function(cur){
+				cur.calcPercentage(data.totals.inc);
+			});
+		},
+		getPercentages: function() {
+			// We don't wanna just loop over the array and do something, we also want to return something. we want to store it some where. so we use map method.
+			// map() returns something and stores it in a variable while forEach does not.
+			var allPerc = data.allItems.exp.map(function(cur){
+				return cur.getPercentage();
+			});
+			return allPerc;
 		},
 		getBudget: function() {
 			return {
@@ -255,8 +281,11 @@ var controller = (function(budgetCtrl, UICtrl) {
 
 	var updatePercentages = function() {
 		// 1. Calculate the percentages
+		budgetCtrl.calculatePercentages();
 		// 2. Read percentages from the budget controller
+		var percentages = budgetCtrl.getPercentages();
 		// 3. Update the UI with the new percentages
+		console.log(percentages);
 	};
 
 	var ctrlAddItem = function() {
