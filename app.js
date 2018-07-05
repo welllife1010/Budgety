@@ -24,13 +24,13 @@ that we want to be public.
 -------------------------------------------------------------------------------------------- */
 /* --------------------------------------------------------------------------------------------
 
-Closure - An inner function has always access to the variables and parameters of its outer function
-even after theouter function has returned.
+	Closure - An inner function has always access to the variables and parameters of its outer function
+    even after theouter function has returned.
 
 -------------------------------------------------------------------------------------------- */
 /* --------------------------------------------------------------------------------------------
 
-The difference between map and forEach is that map returns a brand new array.
+	The difference between map and forEach is that map returns a brand new array.
 
 -------------------------------------------------------------------------------------------- */
 /* --------------------------------------------------------------------------------------------
@@ -43,6 +43,13 @@ The difference between map and forEach is that map returns a brand new array.
 2. Array splice() Method is used to remove elements.
    The splice() method adds/removes items to/from an array, and returns the removed item(s).
    Note: This method changes the original array.
+
+-------------------------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------------------------
+
+	Strings and Numbers can also have methos, even if they are originally primitive data types.
+	But if we attempt to use methods on them, then JavaScript automatically converts them into
+	objects. so then we can use their methods.
 
 -------------------------------------------------------------------------------------------- */
 
@@ -193,6 +200,31 @@ var UIController = (function() {
 		expensesPercLabel: '.item__percentage'
 	}
 
+	var formatNumber = function(num, type) {
+			var numSplit, int, dec, type;
+			/*
+			+ or - before number
+			exactly 2 decimal points
+			comma separating the thousands
+
+			2310.4567 -> 2,310.46
+			2000 -> 2,000.00
+			*/
+			num = Math.abs(num); // removes the sign of the numbers
+			num = num.toFixed(2); // return a string. toFixed() is a method of the Number prototype
+
+			numSplit = num.split('.'); // create a new array
+
+			int = numSplit[0];
+			if (int.length > 3) {
+				int = int.substr(0, int.length - 3) + ',' + int.substr(int.length - 3,3); // input 23510, output 23,510; input 123456 output 123,456
+			}
+			dec = numSplit[1];
+
+			return (type === 'exp' ? '-' : '+') + ' ' + int + '.' + dec;
+
+	};
+
 	return {
 		getInput: function() {
 			return {
@@ -214,7 +246,7 @@ var UIController = (function() {
 			// 2. Replace the placeholder text with some actual data
 			newHTML = html.replace('%id%', obj.id);
 			newHTML = newHTML.replace('%description%', obj.description);
-			newHTML = newHTML.replace('%value%', obj.value);
+			newHTML = newHTML.replace('%value%', formatNumber(obj.value, type));
 			// 3. Insert the HTML into the DOM
 			document.querySelector(element).insertAdjacentHTML('beforeend', newHTML);
 		},
@@ -235,9 +267,11 @@ var UIController = (function() {
 			fieldsArr[0].focus();
 		},
 		displayBudget: function(obj) {
-			document.querySelector(DOMstrings.budgetLabel).textContent = obj.budget;
-			document.querySelector(DOMstrings.incomeLabel).textContent = obj.totalInc;
-			document.querySelector(DOMstrings.expensesLabel).textContent = obj.totalExp;
+			var type;
+			obj.budget > 0 ? type = 'inc' : type = 'exp';
+			document.querySelector(DOMstrings.budgetLabel).textContent = formatNumber(obj.budget, type) ;
+			document.querySelector(DOMstrings.incomeLabel).textContent = formatNumber(obj.totalInc, 'inc');
+			document.querySelector(DOMstrings.expensesLabel).textContent = formatNumber(obj.totalExp, 'exp');
 			if (obj.percentage > 0) {
 				document.querySelector(DOMstrings.percentageLabel).textContent = obj.percentage + '%';
 			} else {
