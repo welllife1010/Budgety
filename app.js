@@ -28,6 +28,23 @@ Closure - An inner function has always access to the variables and parameters of
 even after theouter function has returned.
 
 -------------------------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------------------------
+
+The difference between map and forEach is that map returns a brand new array.
+
+-------------------------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------------------------
+
+1. Array slice() Method is used to create a copy of the array. 
+   The slice() method returns the selected elements in an array, as a new array object.
+   The slice() method selects the elements starting at the given start argument, and ends at, but does not include, the given end argument.
+   Note: The original array will not be changed.
+
+2. Array splice() Method is used to remove elements.
+   The splice() method adds/removes items to/from an array, and returns the removed item(s).
+   Note: This method changes the original array.
+
+-------------------------------------------------------------------------------------------- */
 
 // BUDGET CONTROLLER - 
 // Keeps track of all the incomes and expenses and also of the budget itself and later also the percentages.
@@ -89,6 +106,18 @@ var budgetController = (function() {
 			data.allItems[type].push(newItem);
 			// 4. Return the new element - 
 			return newItem;
+		},
+		deleteItem: function(type, id) {
+			var ids, index;
+			ids = data.allItems[type].map(function(current){
+				return current.id;
+			});
+
+			index = ids.indexOf(id);
+
+			if (index !== -1) {
+				data.allItems[type].splice(index, 1); // start removing element at the number index and remove exactly one element.
+			}
 		},
 		calculateBudget: function() {
 			// calculate total income and expenses
@@ -161,6 +190,10 @@ var UIController = (function() {
 			newHTML = newHTML.replace('%value%', obj.value);
 			// 3. Insert the HTML into the DOM
 			document.querySelector(element).insertAdjacentHTML('beforeend', newHTML);
+		},
+		deleteListItem: function(selectorID) {
+			var el = document.getElementById(selectorID);
+			el.parentNode.removeChild(el);
 		},
 		clearFields: function() {
 			var fields, fieldsArr;
@@ -243,13 +276,16 @@ var controller = (function(budgetCtrl, UICtrl) {
 		itemID = event.target.parentNode.parentNode.parentNode.parentNode.id;
 		if (itemID) {
 			// inc-1
-			splitID = itemID.split('-')
-			type = splitID[0];
-			ID = spliID[1];
+			splitID = itemID.split('-') // split the string into an array
+			type = splitID[0]; // string
+			ID = parseInt(splitID[1]); //  parses a string and returns an integer
 
 			// 1. Delete the item from the data structure
+			budgetCtrl.deleteItem(type, ID);
 			// 2. Delete the item from the UI
+			UICtrl.deleteListItem(itemID);
 			// 3. Update and show the new budget
+			updateBudget();
 		}
 	};
 
